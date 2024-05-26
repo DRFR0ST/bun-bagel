@@ -1,7 +1,7 @@
 {
   "name": "bun-bagel",
   "description": "🥯 The Bun fetch mocker with a hole lot of flavor.",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "module": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -25,5 +25,14 @@
   },
   "peerDependencies": {
     "typescript": "^5.0.0"
-  }
+  },
+  "keywords": [
+    "bun",
+    "bun-bagel",
+    "fetch",
+    "mock",
+    "mocking",
+    "testing",
+    "unit-testing"
+  ]
 }
