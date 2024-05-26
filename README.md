@@ -1,21 +1,5 @@
-# bun-mock-fetch
+# 🥯 bun-bagel: The Bun fetch mocker with a hole lot of flavor.
 
-To install dependencies:
-
-```bash
-bun install
-```
-
-To run:
-
-```bash
-bun run dev
-```
-
-To build:
-
-```bash
-bun run build
-```
-
-This project was created using `bun init` in bun v1.0.13. [Bun](https://bun.sh) is a fast all-in-one JavaScript runtime.
+[![npm version](https://badge.fury.io/js/bun-bagel.svg)](https://www.npmjs.com/package/bun-bagel)
+[![GitHub license](https://img.shields.io/github/license/DRFR0ST/bun-bagel)](https://github.com/DRFR0ST/bun-bagel/blob/main/LICENSE)
+[![🧪 Tests](https://github.com/DRFR0ST/bun-bagel/actions/workflows/test.yml/badge.svg)](https://github.com/DRFR0ST/bun-bagel/actions/workflows/test.yml)

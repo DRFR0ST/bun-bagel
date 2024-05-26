@@ -1,5 +1,7 @@
 {
-  "name": "bun-mock-fetch",
+  "name": "bun-bagle",
+  "description": "🥯 The Bun fetch mocker with a hole lot of flavor.",
+  "version": "1.0.0",
   "module": "src/index.ts",
   "type": "module",
   "scripts": {
