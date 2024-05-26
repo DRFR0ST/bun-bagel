@@ -1,5 +1,5 @@
 import { expect, test, describe } from "bun:test";
-import { mock, clearMocks } from "../src/mock.ts";
+import { mock, clearMocks } from "../src/mock";
 
 describe("Mock", () => {
     test("mock: should mock a request", async () => {

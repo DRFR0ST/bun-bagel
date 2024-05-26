@@ -54,7 +54,7 @@ export const mock = (request: Request | RegExp, options: MockOptions) => {
             status: 200,
             ok: true,
             // Return the mocked response.
-            json: () => Promise.resolve(mockedRequest[1].data),
+            json: () => Promise.resolve({ data: mockedRequest[1].data }),
         })
     };
 }
