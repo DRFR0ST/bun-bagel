@@ -1,11 +1,11 @@
+import { MockOptions } from "./types";
 import { findRequest, wildcardToRegex } from "./utils";
-
-type MockOptions = {
-    data: any;
-} & RequestInit;
 
 let ORIGINAL_FETCH: (request: Request, init?: RequestInit | undefined) => Promise<Response>;
 
+/**
+ * The cache for registered mocked requests.
+ */
 const MOCKED_REQUESTS = new Map<RegExp, MockOptions>();
 
 /**
@@ -18,9 +18,7 @@ export const mock = (request: Request | RegExp | string, options: MockOptions) =
     const regexInput = input instanceof RegExp ? input : new RegExp(wildcardToRegex(input.toString()));
 
     // Check if request is already mocked.
-    // const isRequestMocked = [...MOCKED_REQUESTS.keys()].find(key => key.toString() === regexInput.toString());
     const isRequestMocked = [...MOCKED_REQUESTS.entries()].find(findRequest([regexInput.toString(), options]));
-
 
     if (!isRequestMocked) {
         // Use regex as key.

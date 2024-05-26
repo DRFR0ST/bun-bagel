@@ -1,3 +1,5 @@
+import { MockOptions } from "./types";
+
 /**
  * @description Convert a wildcard string to a regular expression.
  * @param wildcardString - The wildcard string to convert. eg. '/api/*\/users'
@@ -17,9 +19,9 @@ export function wildcardToRegex(wildcardString: string): RegExp {
 }
 
 /**
- * @description Find requests.
+ * @description Find a requests.
  */
-export const findRequest = (original: [string, any]) => (mocked: [RegExp, any]) => {
+export const findRequest = (original: [string, RequestInit?]) => (mocked: [RegExp, MockOptions?]) => {
     const [keyA, optionsA] = original;
     const [keyB, optionsB] = mocked;
 
@@ -39,14 +41,14 @@ export const findRequest = (original: [string, any]) => (mocked: [RegExp, any]) 
         return false;
 
     // Match headers.
-    const headersA = optionsA?.headers || {};
-    const headersB = optionsB?.headers || {};
+    const headersA = new Headers(optionsA?.headers);
+    const headersB = new Headers(optionsB?.headers);
 
-    const headersMatch = Object.entries(headersB).every(([key]) => {
-        const headerValueA = headersA[key];
-        const headerValueB = headersB[key];
+    const headersMatch = Object.keys(headersB).every(key => {
+        const valueA = headersA.get(key);
+        const valueB = headersB.get(key);
 
-        return headerValueA === headerValueB;
+        return valueA === valueB;
     });
 
     if(!headersMatch)
@@ -54,9 +56,4 @@ export const findRequest = (original: [string, any]) => (mocked: [RegExp, any]) 
 
     return true;
 }
-
-// Old code logic
-// ([key, options]) =>
-//             _path instanceof RegExp ? _path === key : _path.match(key)?.[0]
-//             && (options.method && options.method?.toLowerCase() === _method?.toLowerCase())
         

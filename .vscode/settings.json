@@ -1,4 +1,12 @@
 {
     "IDX.aI.enableInlineCompletion": true,
-    "IDX.aI.enableCodebaseIndexing": true
+    "IDX.aI.enableCodebaseIndexing": true,
+    "files.exclude": {
+        "**/.git": true,
+        "**/node_modules": true,
+    },
+    "search.exclude": {
+        "**/node_modules": true,
+        "**/dist": true
+    }
 }
