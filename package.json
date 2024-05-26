@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "dev": "bun run src/index.ts",
-    "build": "bun build src/index.ts --outdir ./dist"
+    "build": "bun build src/index.ts --outdir ./dist --target bun --splitting --minify --sourcemap=inline",
+    "test": "bun test --coverage"
   },
   "devDependencies": {
     "bun-types": "latest"
