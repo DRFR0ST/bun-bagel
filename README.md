@@ -8,11 +8,11 @@
 
 **bun-bagel** is a mocking library specifically designed for [Bun's fetch](https://bun.sh/guides/http/fetch) API. It enables developers to easily intercept fetch requests and provide custom mock responses, streamlining the development and testing process of Bun applications.
 
-:warning: The library is yet only experimental and might change over time. Please 
+:warning: The library is yet only experimental and might change over time. 
 
 ## 📖 Usage
 
-```bun
+```ts
 import { mock, clearMocks } from "bun-bagel";
 
 // Register the mock for the example URL.
@@ -45,7 +45,7 @@ console.log(await response.json());
 ## 🧪 Examples
 
 ### Bun Unit Tests
-```bun
+```ts
 import { describe, test, expect, afterEach } = "bun:test";
 import { mock, clearMocks } from "bun-bagel";
 
