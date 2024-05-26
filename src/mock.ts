@@ -1,4 +1,4 @@
-import { wildcardToRegex } from "./utils";
+import { findRequest, wildcardToRegex } from "./utils";
 
 type MockOptions = {
     data: any;
@@ -18,7 +18,9 @@ export const mock = (request: Request | RegExp | string, options: MockOptions) =
     const regexInput = input instanceof RegExp ? input : new RegExp(wildcardToRegex(input.toString()));
 
     // Check if request is already mocked.
-    const isRequestMocked = [...MOCKED_REQUESTS.keys()].find(key => key.toString() === regexInput.toString());
+    // const isRequestMocked = [...MOCKED_REQUESTS.keys()].find(key => key.toString() === regexInput.toString());
+    const isRequestMocked = [...MOCKED_REQUESTS.entries()].find(findRequest([regexInput.toString(), options]));
+
 
     if (!isRequestMocked) {
         // Use regex as key.
@@ -29,33 +31,13 @@ export const mock = (request: Request | RegExp | string, options: MockOptions) =
         return;
     }
 
-    // Cache the original fetch method before mocking it. Might be useful in the future to clean the mock.
-    if (!ORIGINAL_FETCH)
+    if (!ORIGINAL_FETCH) {
+        // Cache the original fetch method before mocking it. Might be useful in the future to clean the mock.
         ORIGINAL_FETCH = globalThis.fetch;
 
-    // @ts-ignore
-    globalThis.fetch = (_path: string) => {
-        // When the request it fired, check if it matches a mocked request.
-        const mockedRequest = [...MOCKED_REQUESTS.entries()].find(([key]) =>
-            _path.match(key)?.[0]
-        );
-
-        if (!mockedRequest)
-            return Promise.reject({
-                status: 404,
-                ok: false,
-                statusText: "Not Found",
-                url: _path,
-            });
-
-        console.debug("Mocked fetch called:", _path, mockedRequest[0]);
-
-        return Promise.resolve({
-            status: 200,
-            ok: true,
-            json: () => Promise.resolve(mockedRequest[1].data),
-        })
-    };
+        // @ts-ignore
+        globalThis.fetch = MOCKED_FETCH;
+    }
 }
 
 /**
@@ -66,4 +48,33 @@ export const clearMocks = () => {
     // @ts-ignore
     globalThis.fetch = ORIGINAL_FETCH;
 }
+
+/**
+ * @description A mocked fetch method.
+ */
+const MOCKED_FETCH = (_request: Request | RegExp | string, init?: RequestInit) => {
+    const _path = _request instanceof Request ? _request.url : _request.toString();
+
+    // When the request it fired, check if it matches a mocked request.
+    const mockedRequest = [...MOCKED_REQUESTS.entries()].find(findRequest([_path, init]));
+
+    if (!mockedRequest) {
+        const errorPayload = {
+            status: 404,
+            ok: false,
+            statusText: "Not Found",
+            url: _path,
+        };
+        console.debug(errorPayload);
+        return Promise.reject(errorPayload);
+    }
+
+    console.debug("Mocked fetch called:", _path, mockedRequest[0]);
+
+    return Promise.resolve({
+        status: 200,
+        ok: true,
+        json: () => Promise.resolve(mockedRequest[1].data),
+    })
+};
 
