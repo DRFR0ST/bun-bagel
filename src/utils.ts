@@ -1,3 +1,4 @@
+import { DEFAULT_MOCK_OPTIONS, STATUS_TEXT_MAP } from "./constants";
 import { MockOptions } from "./types";
 
 /**
@@ -54,4 +55,28 @@ export const findRequest = (original: [string, RequestInit?]) => (mocked: [RegEx
 
     return true;
 }
-        
+
+/**
+ * Returns an object similar to Response class.
+ * @param status - The HTTP status code of the response.
+ * @param url - The URL of the request.
+ * @param options - The options for the mocked request.
+ * @returns An object similar to Response class.
+ */
+export const makeResponse = (status: keyof typeof STATUS_TEXT_MAP, url: string, options: MockOptions = DEFAULT_MOCK_OPTIONS) => {
+    const { headers, data } = options;
+
+    const ok = status >= 200 && status < 300;
+
+    return {
+        ok,
+        status,
+        statusText: STATUS_TEXT_MAP[status],
+        url,
+        headers,
+        text: () => Promise.resolve(data),
+        json: () => Promise.resolve(data),
+        redirected: false,
+        bodyUsed: !!data
+    };
+}
