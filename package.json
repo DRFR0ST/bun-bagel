@@ -7,7 +7,8 @@
   "scripts": {
     "dev": "bun run src/index.ts",
     "build": "bun build src/index.ts --outdir ./dist --target bun --splitting --minify --sourcemap=inline",
-    "test": "bun test --coverage"
+    "test": "bun test --coverage",
+    "prepublish": "bun run build"
   },
   "devDependencies": {
     "bun-types": "latest"
