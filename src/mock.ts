@@ -11,7 +11,7 @@ const MOCKED_REQUESTS = new Map<RegExp, MockOptions>();
 /**
  * @description Mock the fetch method.
  */
-export const mock = (request: Request | RegExp, options: MockOptions) => {
+export const mock = (request: Request | RegExp | string, options: MockOptions) => {
     const input = request instanceof Request ? request.url : request;
 
     // Create regex class from input.
