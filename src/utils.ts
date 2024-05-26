@@ -44,10 +44,8 @@ export const findRequest = (original: [string, RequestInit?]) => (mocked: [RegEx
     const headersA = new Headers(optionsA?.headers);
     const headersB = new Headers(optionsB?.headers);
 
-    const headersMatch = Object.keys(headersB).every(key => {
+    const headersMatch = [...headersB.entries()].every(([key, valueB]) => {
         const valueA = headersA.get(key);
-        const valueB = headersB.get(key);
-
         return valueA === valueB;
     });
 
