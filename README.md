@@ -46,7 +46,7 @@ console.log(await response.json());
 
 ### Bun Unit Tests
 ```ts
-import { describe, test, expect, afterEach } = "bun:test";
+import { describe, test, expect, afterEach } from "bun:test";
 import { mock, clearMocks } from "bun-bagel";
 
 describe("Unit Test", () => {
