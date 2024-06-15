@@ -28,7 +28,8 @@ describe("Mock", () => {
                 name: "John Doe",
             },
         };
-        expect(mock(request, options)).toBe(undefined);
+
+        expect(mock(request, options)?.called).toBe(true);
         await fetch(`${API_URL}/users`);
     });
 
@@ -144,6 +145,27 @@ describe("Mock", () => {
             await fetch(`${API_URL}/posts`);
         }
          expect(act).toThrow();
+    });
+
+    test("mock: should clear a single mock", async () => {
+        const request = `${API_URL}/users`;
+        const options = {
+            data: {
+                id: 1,
+                name: "John Doe",
+            },
+        };
+        const mockInstance = mock(request, options);
+        const response = await fetch(`${API_URL}/users`);
+        const data = await response.json();
+        expect(data).toEqual(options.data);
+
+        mockInstance.clear();
+
+        const act = async () => {
+            await fetch(`${API_URL}/users`);
+        }
+        expect(act).toThrow();
     });
 
     test("mock: should restore the original fetch method after the test", () => {

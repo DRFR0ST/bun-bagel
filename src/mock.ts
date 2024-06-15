@@ -1,3 +1,4 @@
+import { Mock } from "./mockClass";
 import { DEFAULT_MOCK_OPTIONS } from "./constants";
 import { MockOptions } from "./types";
 import { findRequest, makeResponse, wildcardToRegex } from "./utils";
@@ -7,10 +8,11 @@ let ORIGINAL_FETCH: (request: Request, init?: RequestInit | undefined) => Promis
 /**
  * The cache for registered mocked requests.
  */
-const MOCKED_REQUESTS = new Map<RegExp, MockOptions>();
+export const MOCKED_REQUESTS = new Map<RegExp, Mock>();
 
 /**
  * @description Mock the fetch method.
+ * @returns The mock instance.
  */
 export const mock = (request: Request | RegExp | string, options: MockOptions = DEFAULT_MOCK_OPTIONS) => {
     const input = request instanceof Request ? request.url : request;
@@ -18,12 +20,16 @@ export const mock = (request: Request | RegExp | string, options: MockOptions = 
     // Create regex class from input.
     const regexInput = input instanceof RegExp ? input : new RegExp(wildcardToRegex(input.toString()));
 
-    // Check if request is already mocked.
-    const isRequestMocked = [...MOCKED_REQUESTS.entries()].find(findRequest([regexInput.toString(), options]));
+    // Find the mock in cache.
+    const cachedMock = [...MOCKED_REQUESTS.entries()].find(findRequest([regexInput.toString(), options]));
 
-    if (!isRequestMocked) {
+    let mockInstance = cachedMock?.[1];
+
+    if (!cachedMock) {
+        mockInstance = new Mock(regexInput, options);
+
         // Use regex as key.
-        MOCKED_REQUESTS.set(regexInput, options);
+        MOCKED_REQUESTS.set(regexInput, mockInstance);
 
         if(process.env.VERBOSE) {
             console.debug("\x1b[1mRegistered mocked request\x1b[0m");
@@ -34,7 +40,7 @@ export const mock = (request: Request | RegExp | string, options: MockOptions = 
     } else {
         if(process.env.VERBOSE)
             console.debug("\x1b[1mRequest already mocked\x1b[0m", regexInput);
-        return;
+        return mockInstance!;
     }
 
     if (!ORIGINAL_FETCH) {
@@ -44,6 +50,8 @@ export const mock = (request: Request | RegExp | string, options: MockOptions = 
         // @ts-ignore
         globalThis.fetch = MOCKED_FETCH;
     }
+
+    return mockInstance;
 }
 
 /**
@@ -64,12 +72,15 @@ const MOCKED_FETCH = (_request: Request | RegExp | string, init?: RequestInit) =
     // When the request it fired, check if it matches a mocked request.
     const mockedRequest = [...MOCKED_REQUESTS.entries()].find(findRequest([_path, init]));
 
+    // Run the original fetch method, if mock doesn't exist.
     if (!mockedRequest)
-        return Promise.reject(makeResponse(404, _path));
+        return ORIGINAL_FETCH(_request as Request, init);
 
     if(process.env.VERBOSE)
         console.debug("\x1b[2mMocked fetch called\x1b[0m", _path);
 
-    return makeResponse(200, _path, mockedRequest[1]);
-};
+    // Increment the number of mocked calls.
+    mockedRequest[1]._incrementCalled();
 
+    return makeResponse(200, _path, mockedRequest[1].options);
+};
