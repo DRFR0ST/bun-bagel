@@ -1,3 +1,4 @@
+import { Mock } from "./mockClass";
 import { DEFAULT_MOCK_OPTIONS, STATUS_TEXT_MAP } from "./constants";
 import { MockOptions } from "./types";
 
@@ -22,9 +23,11 @@ export function wildcardToRegex(wildcardString: string): RegExp {
 /**
  * @description Find a requests.
  */
-export const findRequest = (original: [string, RequestInit?]) => (mocked: [RegExp, MockOptions?]) => {
+export const findRequest = (original: [string, RequestInit?]) => (mocked: [RegExp, Mock?]) => {
     const [keyA, optionsA] = original;
-    const [keyB, optionsB] = mocked;
+    const [keyB, mockB] = mocked;
+
+    const optionsB = mockB?.options;
 
     // Match keys.
     const keysMatch = keyA.toString() === keyB.toString() || keyA.match(keyB);
