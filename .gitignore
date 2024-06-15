@@ -26,6 +26,5 @@ npm-debug.log_
 
 dist
 
-# Docusaurus cache and generated files
-
-.docusaurus
+# Node modules
+node_modules/
