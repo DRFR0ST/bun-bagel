@@ -1,5 +1,5 @@
-import { expect, test, describe } from "bun:test";
-import { mock, clearMocks } from "../src/mock";
+import { describe, expect, test } from "bun:test";
+import { clearMocks, mock } from "../src/mock";
 
 const API_URL = `https://bun-bagel.sweet/api/v1`;
 
@@ -144,6 +144,12 @@ describe("Mock", () => {
             await fetch(`${API_URL}/posts`);
         }
          expect(act).toThrow();
+    });
+
+    test("mock: should be async", () => {
+        mock(`${API_URL}/cats`, { data: { meow: "meow" } });
+        const r = fetch(`${API_URL}/cats`);
+        expect(r.then).toBeDefined();
     });
 
     test("mock: should restore the original fetch method after the test", () => {

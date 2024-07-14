@@ -58,7 +58,7 @@ export const clearMocks = () => {
 /**
  * @description A mocked fetch method.
  */
-const MOCKED_FETCH = (_request: Request | RegExp | string, init?: RequestInit) => {
+const MOCKED_FETCH = async (_request: Request | RegExp | string, init?: RequestInit) => {
     const _path = _request instanceof Request ? _request.url : _request.toString();
 
     // When the request it fired, check if it matches a mocked request.
