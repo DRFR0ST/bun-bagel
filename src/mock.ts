@@ -53,6 +53,8 @@ export const clearMocks = () => {
     MOCKED_REQUESTS.clear();
     // @ts-ignore
     globalThis.fetch = ORIGINAL_FETCH;
+    // @ts-ignore
+    ORIGINAL_FETCH = undefined;
 }
 
 /**

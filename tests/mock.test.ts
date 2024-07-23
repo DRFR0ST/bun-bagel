@@ -153,6 +153,14 @@ describe("Mock", () => {
     });
 
     test("mock: should restore the original fetch method after the test", () => {
+      mock(`${API_URL}/cats`, { data: { meow: "meow" } });
+      const mockedFetch = globalThis.fetch;
+      clearMocks();
+      mock(`${API_URL}/cats`, { data: { purr: "purr" } });
+      expect(globalThis.fetch).toBe(mockedFetch);
+    });
+
+    test("mock: should restore the original fetch method after the test", () => {
         clearMocks();
         expect(globalThis.fetch).not.toBeUndefined();
     });
