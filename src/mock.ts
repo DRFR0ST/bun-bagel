@@ -1,5 +1,5 @@
 import { DEFAULT_MOCK_OPTIONS } from "./constants";
-import { MockOptions } from "./types";
+import { MockOptions, HttpStatusCode } from "./types";
 import { findRequest, makeResponse, wildcardToRegex } from "./utils";
 
 let ORIGINAL_FETCH: (request: Request, init?: RequestInit | undefined) => Promise<Response>;
@@ -28,6 +28,7 @@ export const mock = (request: Request | RegExp | string, options: MockOptions = 
         if(process.env.VERBOSE) {
             console.debug("\x1b[1mRegistered mocked request\x1b[0m");
             console.debug("\x1b[2mPath Pattern\x1b[0m", regexInput);
+            console.debug("\x1b[2mStatus\x1b[0m", options.status);
             console.debug("\x1b[2mMethod\x1b[0m", options.method);
             console.debug("\n");
         }
@@ -42,7 +43,7 @@ export const mock = (request: Request | RegExp | string, options: MockOptions = 
         ORIGINAL_FETCH = globalThis.fetch;
 
         // @ts-ignore
-        globalThis.fetch = MOCKED_FETCH;
+        globalThis.fetch = MOCKED_FETCH(options);
     }
 }
 
@@ -60,7 +61,7 @@ export const clearMocks = () => {
 /**
  * @description A mocked fetch method.
  */
-const MOCKED_FETCH = async (_request: Request | RegExp | string, init?: RequestInit) => {
+const MOCKED_FETCH = (options: MockOptions) => async (_request: Request | RegExp | string, init?: RequestInit) => {
     const _path = _request instanceof Request ? _request.url : _request.toString();
 
     // When the request it fired, check if it matches a mocked request.
@@ -72,6 +73,6 @@ const MOCKED_FETCH = async (_request: Request | RegExp | string, init?: RequestI
     if(process.env.VERBOSE)
         console.debug("\x1b[2mMocked fetch called\x1b[0m", _path);
 
-    return makeResponse(200, _path, mockedRequest[1]);
+    return makeResponse(options.status ?? HttpStatusCode.OK, _path, mockedRequest[1]);
 };
 
