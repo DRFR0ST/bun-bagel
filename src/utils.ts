@@ -1,5 +1,5 @@
 import { DEFAULT_MOCK_OPTIONS } from "./constants";
-import { MockOptions, HttpStatusCode } from "./types";
+import { MockOptions } from "./types";
 
 /**
  * @description Convert a wildcard string to a regular expression.
@@ -63,7 +63,7 @@ export const findRequest = (original: [string, RequestInit?]) => (mocked: [RegEx
  * @param options - The options for the mocked request.
  * @returns An object similar to Response class.
  */
-export const makeResponse = (status: HttpStatusCode, url: string, options: MockOptions = DEFAULT_MOCK_OPTIONS) => {
+export const makeResponse = (status: number, url: string, options: MockOptions = DEFAULT_MOCK_OPTIONS) => {
     const { headers, data, response } = options;
 
     const ok = status >= 200 && status < 300;
@@ -72,7 +72,7 @@ export const makeResponse = (status: HttpStatusCode, url: string, options: MockO
     return {
         ok,
         status,
-        statusText: HttpStatusCode[status],
+        statusText: status,
         url,
         headers: response?.headers ?? headers,
         text: () => Promise.resolve(body),

@@ -1,4 +1,4 @@
-import { mock, HttpStatusCode } from '../dist/index';
+import { mock } from '../dist/index';
 
 const MOCK_FETCH = true;
 
@@ -15,7 +15,7 @@ const data = { foo: "bar" };
 if (MOCK_FETCH)
     mock(url, {
         method, headers, data, response: {
-            status: HttpStatusCode.I_AM_A_TEAPOT,
+            status: 418,
             headers: new Headers({ "x-baz-qux": "quux" }),
         }
     });

@@ -1,5 +1,5 @@
 import { DEFAULT_MOCK_OPTIONS } from "./constants";
-import { MockOptions, HttpStatusCode } from "./types";
+import { MockOptions } from "./types";
 import { findRequest, makeResponse, wildcardToRegex } from "./utils";
 
 let ORIGINAL_FETCH: (request: Request, init?: RequestInit | undefined) => Promise<Response>;
@@ -75,12 +75,12 @@ const MOCKED_FETCH = async (_request: Request | RegExp | string, init?: RequestI
     const mockedRequest = [...MOCKED_REQUESTS.entries()].find(findRequest([_path, init]));
 
     if (!mockedRequest)
-        return Promise.reject(makeResponse(HttpStatusCode.NOT_FOUND, _path));
+        return Promise.reject(makeResponse(404, _path));
 
     if(process.env.VERBOSE)
         console.debug("\x1b[2mMocked fetch called\x1b[0m", _path);
 
-    const mockedStatus = mockedRequest[1].response?.status || HttpStatusCode.OK;
+    const mockedStatus = mockedRequest[1].response?.status || 200;
 
     return makeResponse(mockedStatus, _path, mockedRequest[1]);
 };

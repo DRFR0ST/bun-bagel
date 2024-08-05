@@ -1,6 +1,6 @@
 import { describe, expect, test, beforeEach } from "bun:test";
 import { clearMocks, mock } from "../src/mock";
-import { HttpStatusCode, MockOptions } from "../src/types";
+import { MockOptions } from "../src/types";
 
 const API_URL = `https://bun-bagel.sweet/api/v1`;
 
@@ -24,7 +24,7 @@ describe("Mock", () => {
         const response = await fetch(`${API_URL}/users`);
         const data = await response.json();
 
-        expect(response.status).toEqual(HttpStatusCode.OK);
+        expect(response.status).toEqual(200);
         expect(data).toEqual(options.response?.data);
         expect(mocked).toEqual(true);
     });
@@ -170,12 +170,12 @@ describe("Mock", () => {
         const options: MockOptions = {
             response: {
                 data: { name: "John Doe" },
-                status: HttpStatusCode.I_AM_A_TEAPOT,
+                status: 418,
             }
         };
         mock(request, options);
         const response = await fetch(`${API_URL}/users`);
-        expect(response.status).toEqual(HttpStatusCode.I_AM_A_TEAPOT);
+        expect(response.status).toEqual(418);
     });
 
     test("mock: should mock a request with response headers", async () => {
