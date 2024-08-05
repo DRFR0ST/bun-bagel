@@ -28,8 +28,8 @@ export const mock = (request: Request | RegExp | string, options: MockOptions = 
         if(process.env.VERBOSE) {
             console.debug("\x1b[1mRegistered mocked request\x1b[0m");
             console.debug("\x1b[2mPath Pattern\x1b[0m", regexInput);
-            console.debug("\x1b[2mStatus\x1b[0m", options.status);
-            console.debug("\x1b[2mMethod\x1b[0m", options.method);
+            console.debug("\x1b[2mStatus\x1b[0m", options.status || 200);
+            console.debug("\x1b[2mMethod\x1b[0m", options.method || "GET");
             console.debug("\n");
         }
     } else {
@@ -43,7 +43,7 @@ export const mock = (request: Request | RegExp | string, options: MockOptions = 
         ORIGINAL_FETCH = globalThis.fetch;
 
         // @ts-ignore
-        globalThis.fetch = MOCKED_FETCH(options);
+        globalThis.fetch = MOCKED_FETCH;
     }
 }
 
@@ -52,27 +52,33 @@ export const mock = (request: Request | RegExp | string, options: MockOptions = 
  */
 export const clearMocks = () => {
     MOCKED_REQUESTS.clear();
-    // @ts-ignore
-    globalThis.fetch = ORIGINAL_FETCH;
-    // @ts-ignore
-    ORIGINAL_FETCH = undefined;
+
+    // Restore the original fetch method, if it was mocked.
+    if(!!ORIGINAL_FETCH) {
+        // @ts-ignore
+        globalThis.fetch = ORIGINAL_FETCH.bind({});
+        // @ts-ignore
+        ORIGINAL_FETCH = undefined;
+    }
 }
 
 /**
  * @description A mocked fetch method.
  */
-const MOCKED_FETCH = (options: MockOptions) => async (_request: Request | RegExp | string, init?: RequestInit) => {
+const MOCKED_FETCH = async (_request: Request | RegExp | string, init?: RequestInit) => {
     const _path = _request instanceof Request ? _request.url : _request.toString();
 
     // When the request it fired, check if it matches a mocked request.
     const mockedRequest = [...MOCKED_REQUESTS.entries()].find(findRequest([_path, init]));
 
     if (!mockedRequest)
-        return Promise.reject(makeResponse(404, _path));
+        return Promise.reject(makeResponse(HttpStatusCode.NOT_FOUND, _path));
 
     if(process.env.VERBOSE)
         console.debug("\x1b[2mMocked fetch called\x1b[0m", _path);
 
-    return makeResponse(options.status ?? HttpStatusCode.OK, _path, mockedRequest[1]);
+    const mockedStatus = mockedRequest[1].status || HttpStatusCode.OK;
+
+    return makeResponse(mockedStatus, _path, mockedRequest[1]);
 };
 

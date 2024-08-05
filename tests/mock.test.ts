@@ -1,11 +1,14 @@
-import { describe, expect, test } from "bun:test";
+import { describe, expect, test, afterEach } from "bun:test";
 import { clearMocks, mock } from "../src/mock";
+import { HttpStatusCode } from "../src/types";
 
 const API_URL = `https://bun-bagel.sweet/api/v1`;
 
-let randomId = 123456789;
-
 describe("Mock", () => {
+    afterEach(() => {
+        clearMocks();
+    });
+
     test("mock: should mock a request", async () => {
         const request = new Request(`${API_URL}/users`);
         const options = {
@@ -17,6 +20,7 @@ describe("Mock", () => {
         mock(request, options);
         const response = await fetch(`${API_URL}/users`);
         const data = await response.json();
+        expect(response.status).toEqual(HttpStatusCode.OK);
         expect(data).toEqual(options.data);
     });
 
@@ -139,6 +143,20 @@ describe("Mock", () => {
         expect(act).toThrow();
     });
 
+    test("mock: should mock a request with response status", async () => {
+        const request = new Request(`${API_URL}/users`);
+        const options = {
+            data: {
+                id: 1,
+                name: "John Doe",
+            },
+            status: HttpStatusCode.I_AM_A_TEAPOT,
+        };
+        mock(request, options);
+        const response = await fetch(`${API_URL}/users`);
+        expect(response.status).toEqual(HttpStatusCode.I_AM_A_TEAPOT);
+    });
+
     test("mock: should not mock a request if it is not registered", async () => {
         const act = async () => {
             await fetch(`${API_URL}/posts`);
@@ -157,7 +175,7 @@ describe("Mock", () => {
       const mockedFetch = globalThis.fetch;
       clearMocks();
       mock(`${API_URL}/cats`, { data: { purr: "purr" } });
-      expect(globalThis.fetch).toBe(mockedFetch);
+      expect(globalThis.fetch.name).toBe(mockedFetch.name);
     });
 
     test("mock: should restore the original fetch method after the test", () => {

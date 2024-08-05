@@ -7,4 +7,5 @@ export const DEFAULT_MOCK_OPTIONS: MockOptions = {
     method: 'GET',
     data: null,
     headers: new Headers(),
+    status: 200,
 };
