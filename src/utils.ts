@@ -64,19 +64,20 @@ export const findRequest = (original: [string, RequestInit?]) => (mocked: [RegEx
  * @returns An object similar to Response class.
  */
 export const makeResponse = (status: HttpStatusCode, url: string, options: MockOptions = DEFAULT_MOCK_OPTIONS) => {
-    const { headers, data } = options;
+    const { headers, data, response } = options;
 
     const ok = status >= 200 && status < 300;
+    const body = response?.data ?? data;
 
     return {
         ok,
         status,
         statusText: HttpStatusCode[status],
         url,
-        headers,
-        text: () => Promise.resolve(data),
-        json: () => Promise.resolve(data),
+        headers: response?.headers ?? headers,
+        text: () => Promise.resolve(body),
+        json: () => Promise.resolve(body),
         redirected: false,
-        bodyUsed: !!data
+        bodyUsed: !!body
     };
 }

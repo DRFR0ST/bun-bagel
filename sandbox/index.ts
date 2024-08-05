@@ -13,13 +13,19 @@ const data = { foo: "bar" };
 // Mock fetch
 
 if (MOCK_FETCH)
-    mock(url, { method, headers, data, status: HttpStatusCode.I_AM_A_TEAPOT });
+    mock(url, {
+        method, headers, data, response: {
+            status: HttpStatusCode.I_AM_A_TEAPOT,
+            headers: new Headers({ "x-baz-qux": "quux" }),
+        }
+    });
 
 // Call fetch method
 
 const response = await fetch(url, { method, headers });
 console.log("Response =>", response);
 console.log("Status =>", response.status);
+console.log("Headers =>", response.headers);
 
 const body = await response.json();
 console.log("Body =>", body);
