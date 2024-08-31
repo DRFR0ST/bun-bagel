@@ -10,7 +10,7 @@ let ORIGINAL_FETCH: (request: Request, init?: RequestInit | undefined) => Promis
 const MOCKED_REQUESTS = new Map<RegExp, MockOptions>();
 
 /**
- * @description Mock the fetch method.
+ * Mock the fetch method.
  */
 export const mock = (request: Request | RegExp | string, options: MockOptions = DEFAULT_MOCK_OPTIONS) => {
     const input = request instanceof Request ? request.url : request;
@@ -47,7 +47,7 @@ export const mock = (request: Request | RegExp | string, options: MockOptions = 
 }
 
 /**
- * @description Clear the fetch mock.
+ * Clear the fetch mock.
  */
 export const clearMocks = () => {
     MOCKED_REQUESTS.clear();
@@ -58,7 +58,7 @@ export const clearMocks = () => {
 }
 
 /**
- * @description A mocked fetch method.
+ * A mocked fetch method.
  */
 const MOCKED_FETCH = async (_request: Request | RegExp | string, init?: RequestInit) => {
     const _path = _request instanceof Request ? _request.url : _request.toString();

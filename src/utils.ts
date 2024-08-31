@@ -2,7 +2,7 @@ import { DEFAULT_MOCK_OPTIONS, STATUS_TEXT_MAP } from "./constants";
 import { MockOptions } from "./types";
 
 /**
- * @description Convert a wildcard string to a regular expression.
+ * Convert a wildcard string to a regular expression.
  * @param wildcardString - The wildcard string to convert. eg. '/api/*\/users'
  * @returns A regular expression that matches the wildcard string.
  */
@@ -20,7 +20,7 @@ export function wildcardToRegex(wildcardString: string): RegExp {
 }
 
 /**
- * @description Find a requests.
+ * Find a requests.
  */
 export const findRequest = (original: [string, RequestInit?]) => (mocked: [RegExp, MockOptions?]) => {
     const [keyA, optionsA] = original;
