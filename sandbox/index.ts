@@ -7,8 +7,10 @@ const MOCK_FETCH = true;
 const url = "https://dummyjson.com/test";
 
 const method = "POST";
-const headers = new Headers({ "x-foo-bar": "baz" });
-const data = { foo: "bar" };
+const headers = new Headers({ "x-foo-bar": "baz", "Content-Type": "application/json" });
+// const data = { "status":"ok", "method":"POST" };
+// const data = new Blob(["Hello World"]);
+const data = Bun.file("./sandbox/dummy.json");
 
 // Mock fetch
 
@@ -20,5 +22,5 @@ if (MOCK_FETCH)
 const response = await fetch(url, { method, headers });
 console.log("Response =>", response);
 
-const body = await response.json();
-console.log("Body =>", body);
+const body = await response.blob();
+console.log("Body =>", body, await body.json());

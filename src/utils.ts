@@ -63,20 +63,10 @@ export const findRequest = (original: [string, RequestInit?]) => (mocked: [RegEx
  * @param options - The options for the mocked request.
  * @returns An object similar to Response class.
  */
-export const makeResponse = (status: keyof typeof STATUS_TEXT_MAP, url: string, options: MockOptions = DEFAULT_MOCK_OPTIONS) => {
+export const makeResponse = (status: keyof typeof STATUS_TEXT_MAP, options: MockOptions = DEFAULT_MOCK_OPTIONS) => {
     const { headers, data } = options;
 
-    const ok = status >= 200 && status < 300;
+    const _data = data instanceof Blob || data instanceof FormData ? data : new Blob([JSON.stringify(data)]);
 
-    return {
-        ok,
-        status,
-        statusText: STATUS_TEXT_MAP[status],
-        url,
-        headers,
-        text: () => Promise.resolve(data),
-        json: () => Promise.resolve(data),
-        redirected: false,
-        bodyUsed: !!data
-    };
+    return new Response(_data, { headers, status, statusText: STATUS_TEXT_MAP[status] });
 }

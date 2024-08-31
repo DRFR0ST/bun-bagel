@@ -66,7 +66,27 @@ describe("Unit Test", () => {
         console.log(await response.json()); // => { name: "Foo" }
     });
 });
+```
 
+### Bun Unit Tests with Bun.file
+```ts
+import { describe, test, expect, afterEach } from "bun:test";
+import { mock, clearMocks } from "bun-bagel";
+
+describe("Unit Test", () => {
+    
+    test("Mock Fetch", async () => {
+        // Register the mock for the example URL.
+        mock("https://example.com/api/users/*", { data: Bun.file("./my-file.json") });
+
+        // Call a function that uses the fetch method.
+        const response = await fetchSomeData();
+        const blob = await response.blob();
+
+        // Print the body
+        console.log(await blob.json()); // => { name: "Bar" }
+    });
+});
 ```
 
 ## 📝 License

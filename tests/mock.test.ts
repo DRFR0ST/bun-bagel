@@ -1,9 +1,8 @@
+import { file } from 'bun';
 import { describe, expect, test } from "bun:test";
 import { clearMocks, mock } from "../src/mock";
 
 const API_URL = `https://bun-bagel.sweet/api/v1`;
-
-let randomId = 123456789;
 
 describe("Mock", () => {
     test("mock: should mock a request", async () => {
@@ -144,6 +143,33 @@ describe("Mock", () => {
             await fetch(`${API_URL}/posts`);
         }
          expect(act).toThrow();
+    });
+
+    test("mock: should mock a request with Blob", async () => {
+        const request = new Request(`${API_URL}/blob`);
+        const options = {
+            data: new Blob(["Hello World"]),
+        };
+        mock(request, options);
+
+        const response = await fetch(request);
+        const blob = await response.blob();
+        const text = await blob.text();
+
+        expect(text).toEqual("Hello World");
+    });
+
+    test("mock: should mock a request with Bun.file", async () => {
+        const request = new Request(`${API_URL}/file`);
+        const options = {
+            data: file('./sandbox/dummy.json'),
+        };
+        mock(request, options);
+
+        const response = await fetch(request);
+        const data = await response.blob();
+
+        expect(await data.json()).toEqual({ foo: "bar" });
     });
 
     test("mock: should be async", () => {

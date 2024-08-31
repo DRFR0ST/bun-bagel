@@ -67,11 +67,11 @@ const MOCKED_FETCH = async (_request: Request | RegExp | string, init?: RequestI
     const mockedRequest = [...MOCKED_REQUESTS.entries()].find(findRequest([_path, init]));
 
     if (!mockedRequest)
-        return Promise.reject(makeResponse(404, _path));
+        return Promise.reject(makeResponse(404));
 
     if(process.env.VERBOSE)
         console.debug("\x1b[2mMocked fetch called\x1b[0m", _path);
 
-    return makeResponse(200, _path, mockedRequest[1]);
+    return makeResponse(200, mockedRequest[1]);
 };
 

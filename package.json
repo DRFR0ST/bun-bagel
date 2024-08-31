@@ -22,6 +22,7 @@
     "prepublish": "bun run build"
   },
   "devDependencies": {
+    "@types/bun": "latest",
     "bun-types": "latest"
   },
   "peerDependencies": {
