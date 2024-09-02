@@ -13,7 +13,7 @@
 ## 📖 Usage
 
 ```ts
-import { mock, clearMocks } from "bun-bagel";
+import { mock } from "bun-bagel";
 
 // Register the mock for the example URL.
 mock("https://example.com/api/users/*", { data: { name: "Foo" } });
@@ -69,7 +69,58 @@ describe("Unit Test", () => {
 
 ```
 
+### Mock by headers and method
+```ts
+import { mock } from "bun-bagel";
+import type { MockOptions } from "bun-bagel";
+
+const options: MockOptions = {
+    method: "POST",
+    headers: { "x-foo-bar": "baz" },
+    response: {
+        data: { name: "Foo" },
+    }
+};
+
+// Register the mock for the example URL.
+mock("https://example.com/api/users/*", options);
+
+// Make a fetch request to the mocked URL
+const response = await fetch("https://example.com/api/users/123", { headers: { "x-foo-bar": "baz" } });
+
+// Requests without the headers will not be matched.
+const response2 = await fetch("https://example.com/api/users/123");
+
+// Check the response body.
+console.log(await response.json()); // => { name: "Foo" }
+```
+
+### Mock response status and headers
+```ts
+import { mock } from "bun-bagel";
+import type { MockOptions } from "bun-bagel";
+
+const options: MockOptions = {
+    response: {
+        data: { name: "Foo" },
+        status: 404,
+        headers: { "x-foo-bar": "baz" },
+    }
+};
+
+// Register the mock for the example URL.
+mock("https://example.com/api/users/*", options);
+
+// Make a fetch request to the mocked URL
+const response = await fetch("https://example.com/api/users/123");
+
+// Check the status and headers.
+console.log(response.status); // => 404
+console.log(response.headers); // => { "x-foo-bar": "baz" }
+```
+
 ## 📝 License
 This project is licensed under the terms of the MIT license. See the LICENSE file for details.
 
+#### 📢 Thanks to all contributors for making this library better!
 #### 🤖 Thanks to Gemini for generating most of this code and readme.
