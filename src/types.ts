@@ -8,6 +8,7 @@ export type MockOptions = {
     headers?: RequestInit['headers'];
     method?: RequestInit['method'];
     response?: MockResponse;
+    throw?: Error;
 };
 
 /**
