@@ -45,7 +45,7 @@ We use the following format for commit messages:
 * `:package: Install bun-bagel@latest`
 
 You can find a list of available gitmojis on [gitmoji.dev](https://gitmoji.dev/).
-It might be difficult at times to pick the right emoji, but please don't stress, go with your gut feeling.
+It might be difficult at times to pick the right emoji, but please don't stress, follow your gut feeling.
 
 > [!NOTE]
 > Notice that the commit message usually completes the sentence "This commit will...".
