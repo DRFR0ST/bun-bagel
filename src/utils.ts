@@ -1,4 +1,4 @@
-import { DEFAULT_MOCK_OPTIONS, STATUS_TEXT_MAP } from "./constants";
+import { DEFAULT_MOCK_OPTIONS } from "./constants";
 import { MockOptions } from "./types";
 
 /**
@@ -63,10 +63,12 @@ export const findRequest = (original: [string, RequestInit?]) => (mocked: [RegEx
  * @param options - The options for the mocked request.
  * @returns An object similar to Response class.
  */
-export const makeResponse = (status: keyof typeof STATUS_TEXT_MAP, options: MockOptions = DEFAULT_MOCK_OPTIONS) => {
-    const { headers, data } = options;
+export const makeResponse = (status: number, options: MockOptions = DEFAULT_MOCK_OPTIONS) => {
+    const { headers, data, response } = options;
 
-    const _data = data instanceof Blob || data instanceof FormData ? data : new Blob([JSON.stringify(data)]);
+    const _data = response?.data ?? data;
+    const _headers = response?.headers ?? headers;
+    const body = _data instanceof Blob || _data instanceof FormData ? _data : new Blob([JSON.stringify(_data)]);
 
-    return new Response(_data, { headers, status, statusText: STATUS_TEXT_MAP[status] });
+    return new Response(body, { headers: _headers, status });
 }

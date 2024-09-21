@@ -21,21 +21,24 @@ export const mock = (request: Request | RegExp | string, options: MockOptions = 
     // Check if request is already mocked.
     const isRequestMocked = [...MOCKED_REQUESTS.entries()].find(findRequest([regexInput.toString(), options]));
 
-    if (!isRequestMocked) {
+    if(process.env.VERBOSE) {
+        if (!isRequestMocked) 
+            console.debug("\x1b[1mRegistered mocked request\x1b[0m");
+        else
+            console.debug("\x1b[1mRequest already mocked\x1b[0m \x1b[2mupdated\x1b[0m");
+
+        console.debug("\x1b[2mURL\x1b[0m", input);
+        console.debug("\x1b[2mPath Pattern\x1b[0m", regexInput);
+        console.debug("\x1b[2mStatus\x1b[0m", options.response?.status || 200);
+        console.debug("\x1b[2mMethod\x1b[0m", options.method || "GET");
+        console.debug("\n");
+    }
+
+    if(!isRequestMocked)
         // Use regex as key.
         MOCKED_REQUESTS.set(regexInput, options);
-
-        if(process.env.VERBOSE) {
-            console.debug("\x1b[1mRegistered mocked request\x1b[0m");
-            console.debug("\x1b[2mPath Pattern\x1b[0m", regexInput);
-            console.debug("\x1b[2mMethod\x1b[0m", options.method);
-            console.debug("\n");
-        }
-    } else {
-        if(process.env.VERBOSE)
-            console.debug("\x1b[1mRequest already mocked\x1b[0m", regexInput);
+    else
         return;
-    }
 
     if (!ORIGINAL_FETCH) {
         // Cache the original fetch method before mocking it. Might be useful in the future to clean the mock.
@@ -44,6 +47,7 @@ export const mock = (request: Request | RegExp | string, options: MockOptions = 
         // @ts-ignore
         globalThis.fetch = MOCKED_FETCH;
     }
+    return true;
 }
 
 /**
@@ -51,10 +55,14 @@ export const mock = (request: Request | RegExp | string, options: MockOptions = 
  */
 export const clearMocks = () => {
     MOCKED_REQUESTS.clear();
-    // @ts-ignore
-    globalThis.fetch = ORIGINAL_FETCH;
-    // @ts-ignore
-    ORIGINAL_FETCH = undefined;
+
+    // Restore the original fetch method, if it was mocked.
+    if(!!ORIGINAL_FETCH) {
+        // @ts-ignore
+        globalThis.fetch = ORIGINAL_FETCH.bind({});
+        // @ts-ignore
+        ORIGINAL_FETCH = undefined;
+    }
 }
 
 /**
@@ -72,6 +80,8 @@ const MOCKED_FETCH = async (_request: Request | RegExp | string, init?: RequestI
     if(process.env.VERBOSE)
         console.debug("\x1b[2mMocked fetch called\x1b[0m", _path);
 
-    return makeResponse(200, mockedRequest[1]);
+    const mockedStatus = mockedRequest[1].response?.status || 200;
+
+    return makeResponse(mockedStatus, mockedRequest[1]);
 };
 
