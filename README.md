@@ -119,8 +119,28 @@ console.log(response.status); // => 404
 console.log(response.headers); // => { "x-foo-bar": "baz" }
 ```
 
+## 🤝 Contributing
+
+Contributions are welcome! Please see the [CONTRIBUTING.md](CONTRIBUTING.md) file for details.
+
+## 🔨 Development
+
+To contribute to bun-bagel, follow these steps:
+
+1. Clone the repository: `git clone https://github.com/DRFR0ST/bun-bagel.git`
+2. Install dependencies: `bun install`
+3. Run tests: `bun test`
+4. Build the library: `bun run build`
+
+> [!NOTE]
+>You can also play around with bun-bagel by making changes in the `/sandbox` directory and running `bun run sandbox`. Make sure to build the library after making changes in the `/src` directory.
+
+## 🤝 Community
+
+Join the discussion on the [GitHub Discussions](https://github.com/DRFR0ST/bun-bagel/discussions) page.
+
 ## 📝 License
-This project is licensed under the terms of the MIT license. See the LICENSE file for details.
+This project is licensed under the terms of the MIT license. See the [LICENSE](https://github.com/DRFR0ST/bun-bagel/blob/main/LICENSE) file for details.
 
 #### 📢 Thanks to all contributors for making this library better!
-#### 🤖 Thanks to Gemini for generating most of this code and readme.
+#### 🤖 Thanks to Gemini for generating a part of the initial code and readme, and helped brainstorm the idea.
