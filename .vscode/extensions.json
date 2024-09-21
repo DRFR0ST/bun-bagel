@@ -1,0 +1,7 @@
+{
+  "recommendations": [
+    "biomejs.biome",
+    "eamodio.gitlens",
+    "aaron-bond.better-comments"
+  ]
+}

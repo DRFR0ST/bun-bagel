@@ -19,9 +19,14 @@
     "build:emitDeclarations": "tsc --emitDeclarationOnly --project tsconfig.json --tsBuildInfoFile './dist/.tsbuildinfo'",
     "sandbox": "bun run ./sandbox/index.ts",
     "test": "bun test --coverage",
+    "lint": "bunx biome lint --write ./src ./tests",
+    "format": "bunx biome format --write ./src ./tests",
+    "check": "bunx biome check --write ./src ./tests",
+    "check:fix": "bunx biome check --unsafe --fix ./src ./tests",
     "prepublish": "bun run build"
   },
   "devDependencies": {
+    "@biomejs/biome": "1.9.2",
     "bun-types": "latest"
   },
   "peerDependencies": {
