@@ -192,6 +192,20 @@ describe("Mock", () => {
         expect(response.headers).toEqual({ "x-baz-qux": "quux" });
     });
 
+    test("mock: should mock a request that throws a fetch error", async () => {
+        const request = new Request(`${API_URL}/cats`);
+        const options: MockOptions = {
+            throw: new Error("Mocked error"),
+        };
+        mock(request, options);
+        try {
+            await fetch(`${API_URL}/cats`);
+            expect().fail();
+        } catch (e) {
+            expect(e.message).toEqual("Mocked error");
+        }
+    });
+
     test("mock: should not mock a request if it is not registered", async () => {
         const act = async () => {
             await fetch(`${API_URL}/posts`);
