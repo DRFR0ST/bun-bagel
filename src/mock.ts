@@ -97,6 +97,8 @@ const MOCKED_FETCH = async (
 	if (process.env.VERBOSE)
 		console.debug("\x1b[2mMocked fetch called\x1b[0m", _path);
 
+	if (mockedRequest[1].throw) throw mockedRequest[1].throw;
+
 	const mockedStatus = mockedRequest[1].response?.status || 200;
 
 	return makeResponse(mockedStatus, _path, mockedRequest[1]);
