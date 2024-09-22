@@ -16,7 +16,9 @@
 
 ## Coding Style 🎨
 
-**Coming soon!**
+* **Linting:** We use [Biome](https://biomejs.dev/) to lint our code. You can run `bun run lint` or `bun run check` to run the linter. To auto-fix issues, please run `bun run check:fix`.
+* **Formatting:** We format the code using [Biome](https://biomejs.dev/) as well. Run `bun run format` to format the code.
+* **Testing:** We use `bun test` to run our tests.
 
 ## Code Review 🔍
 

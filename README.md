@@ -130,7 +130,8 @@ To contribute to bun-bagel, follow these steps:
 1. Clone the repository: `git clone https://github.com/DRFR0ST/bun-bagel.git`
 2. Install dependencies: `bun install`
 3. Run tests: `bun test`
-4. Build the library: `bun run build`
+4. Run linter & formatter: `bun run check`
+5. Build the library: `bun run build`
 
 > [!NOTE]
 >You can also play around with bun-bagel by making changes in the `/sandbox` directory and running `bun run sandbox`. Make sure to build the library after making changes in the `/src` directory.
