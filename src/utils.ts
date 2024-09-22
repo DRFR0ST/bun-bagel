@@ -63,21 +63,12 @@ export const findRequest = (original: [string, RequestInit?]) => (mocked: [RegEx
  * @param options - The options for the mocked request.
  * @returns An object similar to Response class.
  */
-export const makeResponse = (status: number, url: string, options: MockOptions = DEFAULT_MOCK_OPTIONS) => {
+export const makeResponse = (status: number, options: MockOptions = DEFAULT_MOCK_OPTIONS) => {
     const { headers, data, response } = options;
 
-    const ok = status >= 200 && status < 300;
-    const body = response?.data ?? data;
+    const _data = response?.data ?? data;
+    const _headers = response?.headers ?? headers;
+    const body = _data instanceof Blob || _data instanceof FormData ? _data : new Blob([JSON.stringify(_data)]);
 
-    return {
-        ok,
-        status,
-        statusText: status,
-        url,
-        headers: response?.headers ?? headers,
-        text: () => Promise.resolve(body),
-        json: () => Promise.resolve(body),
-        redirected: false,
-        bodyUsed: !!body
-    };
+    return new Response(body, { headers: _headers, status });
 }

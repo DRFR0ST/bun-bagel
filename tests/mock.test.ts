@@ -1,3 +1,4 @@
+import { file } from 'bun';
 import { describe, expect, test, beforeEach } from "bun:test";
 import { clearMocks, mock } from "../src/mock";
 import { MockOptions } from "../src/types";
@@ -40,6 +41,7 @@ describe("Mock", () => {
             },
         };
         expect(mock(request, options)).toBe(true);
+        // @ts-ignore
         expect(mock(request, options)).toBe(undefined);
         await fetch(`${API_URL}/users`);
     });
@@ -189,7 +191,7 @@ describe("Mock", () => {
         };
         mock(request, options);
         const response = await fetch(`${API_URL}/users`, { headers: { "x-foo-bar": "baz"  } });
-        expect(response.headers).toEqual({ "x-baz-qux": "quux" });
+        expect([...response.headers.entries()]).toEqual([[ "x-baz-qux", "quux" ]]);
     });
 
     test("mock: should mock a request that throws a fetch error", async () => {
@@ -211,6 +213,33 @@ describe("Mock", () => {
             await fetch(`${API_URL}/posts`);
         }
         expect(act).toThrow();
+    });
+
+    test("mock: should mock a request with Blob", async () => {
+        const request = new Request(`${API_URL}/blob`);
+        const options = {
+            data: new Blob(["Hello World"]),
+        };
+        mock(request, options);
+
+        const response = await fetch(request);
+        const blob = await response.blob();
+        const text = await blob.text();
+
+        expect(text).toEqual("Hello World");
+    });
+
+    test("mock: should mock a request with Bun.file", async () => {
+        const request = new Request(`${API_URL}/file`);
+        const options = {
+            data: file('./sandbox/dummy.json'),
+        };
+        mock(request, options);
+
+        const response = await fetch(request);
+        const data = await response.blob();
+
+        expect(await data.json()).toEqual({ foo: "bar" });
     });
 
     test("mock: should be async", () => {
