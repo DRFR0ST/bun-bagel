@@ -40,7 +40,10 @@ describe("Mock", () => {
 			},
 		};
 		expect(mock(request, options)).toBe(true);
-		expect(mock(request, options)).toBe(undefined);
+
+		// for some reason the expect function fails to infer the return type correctly
+		// and only infers it as boolean so we specify the return type explicitly as the return type of the function
+		expect<ReturnType<typeof mock>>(mock(request, options)).toBe(undefined);
 		await fetch(`${API_URL}/users`);
 	});
 
@@ -192,7 +195,8 @@ describe("Mock", () => {
 		const response = await fetch(`${API_URL}/users`, {
 			headers: { "x-foo-bar": "baz" },
 		});
-		expect(response.headers).toEqual({ "x-baz-qux": "quux" });
+
+		expect(response.headers).toEqual(new Headers({ "x-baz-qux": "quux" }));
 	});
 
 	test("mock: should not mock a request if it is not registered", async () => {
