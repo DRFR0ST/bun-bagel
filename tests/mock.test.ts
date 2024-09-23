@@ -41,8 +41,8 @@ describe("Mock", () => {
 		};
 		expect(mock(request, options)).toBe(true);
 
-		// for some reason the expect function fails to infer the return type correctly
-		// and only infers it as boolean so we specify the return type explicitly as the return type of the function
+		// for some reason the expect function fails to infer the return type correctly and only infers
+		// it as boolean so we specify the type of expect explicitly as the return type of the function
 		expect<ReturnType<typeof mock>>(mock(request, options)).toBe(undefined);
 		await fetch(`${API_URL}/users`);
 	});
