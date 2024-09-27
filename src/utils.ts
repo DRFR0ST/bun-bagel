@@ -76,7 +76,7 @@ export const makeResponse = (
 		status,
 		statusText: status,
 		url,
-		headers: response?.headers ?? headers,
+		headers: new Headers(response?.headers ?? headers),
 		text: () => Promise.resolve(body),
 		json: () => Promise.resolve(body),
 		redirected: false,

@@ -16,7 +16,7 @@
     "dev": "bun run src/index.ts",
     "build": "bun run build:bun && bun run build:emitDeclarations",
     "build:bun": "bun build ./src/index.ts --outdir dist --target bun --minify --sourcemap=external",
-    "build:emitDeclarations": "tsc --emitDeclarationOnly --project tsconfig.json --tsBuildInfoFile './dist/.tsbuildinfo'",
+    "build:emitDeclarations": "tsc --emitDeclarationOnly --project tsconfig.build.json --tsBuildInfoFile './dist/.tsbuildinfo'",
     "sandbox": "bun run ./sandbox/index.ts",
     "test": "bun test --coverage",
     "lint": "bunx biome lint --write ./src ./tests",
