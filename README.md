@@ -119,6 +119,16 @@ console.log(response.status); // => 404
 console.log(response.headers); // => { "x-foo-bar": "baz" }
 ```
 
+### Disable real http requests
+
+```
+import { disableRealRequests } from "bun-bagel";
+
+disableRealRequests();
+
+await fetch("https://example.com/api/users/123"); // Throws 404 error.
+```
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please see the [CONTRIBUTING.md](CONTRIBUTING.md) file for details.

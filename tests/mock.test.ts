@@ -1,5 +1,5 @@
-import { beforeEach, describe, expect, test } from "bun:test";
-import { clearMocks, mock } from "../src/mock";
+import { beforeEach, describe, expect, spyOn, test } from "bun:test";
+import { clearMocks, disableRealRequests, enableRealRequests, mock } from "../src/mock";
 import type { MockOptions } from "../src/types";
 
 const API_URL = "https://bun-bagel.sweet/api/v1";
@@ -199,11 +199,39 @@ describe("Mock", () => {
 		expect(response.headers).toEqual(new Headers({ "x-baz-qux": "quux" }));
 	});
 
-	test("mock: should not mock a request if it is not registered", async () => {
+	test("mock: should throw if real requests are disabled", async () => {
+		disableRealRequests();
+		mock("/", {}); // Required to initialize the library/overwrite the fetch method.
+
 		const act = async () => {
-			await fetch(`${API_URL}/posts`);
+			await fetch('https://jsonplaceholder.typicode.com/todos/1');
 		};
 		expect(act).toThrow();
+	});
+
+	test("mock: should not throw if real requests are enabled", async () => {
+		enableRealRequests();
+		mock("/", {}); // Required to initialize the library/overwrite the fetch method.
+
+		const act = async () => {
+			await fetch('https://jsonplaceholder.typicode.com/todos/1');
+		};
+		expect(act).not.toThrow();
+	});
+
+	test("mock: should print console.debug logs", async () => {
+		const logSpy = spyOn(console, 'debug');
+
+		// @ts-ignore
+		process.env.VERBOSE = true;
+		expect(mock("/", {})).toBe(true);
+		expect(logSpy).toHaveBeenCalledWith('\x1b[1mRegistered mocked request\x1b[0m');
+		expect(logSpy).toHaveBeenCalledTimes(6);
+
+		// @ts-ignore
+		expect(mock("/", {})).toBe(undefined);
+		expect(logSpy).toHaveBeenCalledWith('\x1b[1mRequest already mocked\x1b[0m \x1b[2mupdated\x1b[0m');
+		expect(logSpy).toHaveBeenCalledTimes(12);
 	});
 
 	test("mock: should be async", () => {

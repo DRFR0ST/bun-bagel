@@ -3,9 +3,14 @@ import type { MockOptions } from "./types";
 import { findRequest, makeResponse, wildcardToRegex } from "./utils";
 
 let ORIGINAL_FETCH: (
-	request: Request,
+	request: Request | string,
 	init?: RequestInit | undefined,
 ) => Promise<Response>;
+
+/**
+ * @description Disable real requests.
+ */
+let DISABLE_REAL_REQUESTS = false;
 
 /**
  * The cache for registered mocked requests.
@@ -81,18 +86,24 @@ export const clearMocks = () => {
  * @description A mocked fetch method.
  */
 const MOCKED_FETCH = async (
-	_request: Request | RegExp | string,
+	request: Request | RegExp | string,
 	init?: RequestInit,
 ) => {
 	const _path =
-		_request instanceof Request ? _request.url : _request.toString();
+		request instanceof Request ? request.url : request.toString();
+
+	const _request = request instanceof Request ? request : new Request(_path);
 
 	// When the request it fired, check if it matches a mocked request.
 	const mockedRequest = [...MOCKED_REQUESTS.entries()].find(
 		findRequest([_path, init]),
 	);
 
-	if (!mockedRequest) return Promise.reject(makeResponse(404, _path));
+	if (!mockedRequest) {
+		if(DISABLE_REAL_REQUESTS) return Promise.reject(makeResponse(404, _path));
+		
+		return await ORIGINAL_FETCH(_request, init);
+	};
 
 	if (process.env.VERBOSE)
 		console.debug("\x1b[2mMocked fetch called\x1b[0m", _path);
@@ -103,3 +114,22 @@ const MOCKED_FETCH = async (
 
 	return makeResponse(mockedStatus, _path, mockedRequest[1]);
 };
+
+/**
+ * @description Enable real requests. 
+ * Once enabled, all requests will be sent to the server.
+ * This is useful for testing scenarios where you want to test the real API.
+ * @returns void
+ */
+export const enableRealRequests = () => {
+	DISABLE_REAL_REQUESTS = false;
+}
+
+/**
+ * @description Disable real requests.
+ * Once disabled, all requests will be mocked, and unmocked requests will throw 404 error.
+ * @returns void
+ */
+export const disableRealRequests = () => {
+	DISABLE_REAL_REQUESTS = true;
+}
