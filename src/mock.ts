@@ -122,7 +122,6 @@ const MOCKED_FETCH = async (
  * @returns void
  */
 export const enableRealRequests = () => {
-	if (!DISABLE_REAL_REQUESTS) return;
 	DISABLE_REAL_REQUESTS = false;
 }
 
@@ -132,6 +131,5 @@ export const enableRealRequests = () => {
  * @returns void
  */
 export const disableRealRequests = () => {
-	if (DISABLE_REAL_REQUESTS) return;
 	DISABLE_REAL_REQUESTS = true;
 }
