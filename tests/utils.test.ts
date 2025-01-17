@@ -59,17 +59,17 @@ describe("Utils", () => {
 			);
 		});
 
-		// test("should not find a request by URL if the headers do not match", () => {
-		// 	const request = new Request("http://localhost/api/users", {
-		// 		headers: { "x-foo-bar": "baz" },
-		// 	});
-		// 	const mocked: MockArr = [/\/api\/users$/, DEFAULT_MOCK_OPTIONS];
-		// 	expect(
-		// 		findRequest([request.url, { headers: { "x-foo-bar": "baz" } }])(
-		// 			mocked,
-		// 		),
-		// 	).toEqual(false);
-		// });
+		test("should not find a request by URL if the headers do not match", () => {
+			const request = new Request("http://localhost/api/users", {
+				headers: { "x-foo-bar": "baz" },
+			});
+			const mocked: MockArr = [/\/api\/users$/, DEFAULT_MOCK_OPTIONS];
+			expect(
+				findRequest([request.url, { headers: { "x-foo-bar": "baz" } }])(
+					mocked,
+				),
+			).toEqual(false);
+		});
 	});
 
 	describe("makeResponse", () => {

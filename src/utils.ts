@@ -44,12 +44,14 @@ export const findRequest =
 		const headersA = new Headers(optionsA?.headers);
 		const headersB = new Headers(optionsB?.headers);
 
-		const headersMatch = [...headersB.entries()].every(([key, valueB]) => {
-			const valueA = headersA.get(key);
-			return valueA === valueB;
-		});
+		const headersKeys = [...headersA.keys(), ...headersB.keys()];
 
-		if (!headersMatch) return false;
+		for(const key of headersKeys) {
+			const valueA = headersA.get(key);
+			const valueB = headersB.get(key);
+
+			if (valueA !== valueB) return false;
+		}
 
 		return true;
 	};
