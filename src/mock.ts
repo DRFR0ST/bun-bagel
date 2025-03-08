@@ -100,7 +100,7 @@ const MOCKED_FETCH = async (
 	);
 
 	if (!mockedRequest) {
-		if(DISABLE_REAL_REQUESTS) return Promise.reject(makeResponse(404, _path));
+		if(DISABLE_REAL_REQUESTS) return Promise.reject(makeResponse(404));
 		
 		return await ORIGINAL_FETCH(_request, init);
 	};
@@ -112,7 +112,7 @@ const MOCKED_FETCH = async (
 
 	const mockedStatus = mockedRequest[1].response?.status || 200;
 
-	return makeResponse(mockedStatus, _path, mockedRequest[1]);
+	return makeResponse(mockedStatus, mockedRequest[1]);
 };
 
 /**

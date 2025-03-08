@@ -66,7 +66,27 @@ describe("Unit Test", () => {
         console.log(await response.json()); // => { name: "Foo" }
     });
 });
+```
 
+### Bun Unit Tests with Bun.file
+```ts
+import { describe, test, expect, afterEach } from "bun:test";
+import { mock, clearMocks } from "bun-bagel";
+
+describe("Unit Test", () => {
+    
+    test("Mock Fetch", async () => {
+        // Register the mock for the example URL.
+        mock("https://example.com/api/users/*", { data: Bun.file("./my-file.json") });
+
+        // Call a function that uses the fetch method.
+        const response = await fetchSomeData();
+        const blob = await response.blob();
+
+        // Print the body
+        console.log(await blob.json()); // => { name: "Bar" }
+    });
+});
 ```
 
 ### Mock by headers and method
@@ -76,7 +96,7 @@ import type { MockOptions } from "bun-bagel";
 
 const options: MockOptions = {
     method: "POST",
-    headers: { "x-foo-bar": "baz" },
+    headers: new Headers({ "x-foo-bar": "baz" }),
     response: {
         data: { name: "Foo" },
     }
@@ -86,7 +106,7 @@ const options: MockOptions = {
 mock("https://example.com/api/users/*", options);
 
 // Make a fetch request to the mocked URL
-const response = await fetch("https://example.com/api/users/123", { headers: { "x-foo-bar": "baz" } });
+const response = await fetch("https://example.com/api/users/123", { headers: new Headers({ "x-foo-bar": "baz" }) });
 
 // Requests without the headers will not be matched.
 const response2 = await fetch("https://example.com/api/users/123");
@@ -104,7 +124,7 @@ const options: MockOptions = {
     response: {
         data: { name: "Foo" },
         status: 404,
-        headers: { "x-foo-bar": "baz" },
+        headers: new Headers({ "x-foo-bar": "baz" }),
     }
 };
 

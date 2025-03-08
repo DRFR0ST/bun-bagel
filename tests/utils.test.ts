@@ -38,14 +38,14 @@ describe("Utils", () => {
 
 		test("should find a request by URL and headers", () => {
 			const request = new Request("http://localhost/api/users", {
-				headers: { "x-foo-bar": "baz" },
+				headers: new Headers({ "x-foo-bar": "baz" }),
 			});
 			const mocked: MockArr = [
 				/\/api\/users$/,
-				{ ...DEFAULT_MOCK_OPTIONS, headers: { "x-foo-bar": "baz" } },
+				{ ...DEFAULT_MOCK_OPTIONS, headers: new Headers({ "x-foo-bar": "baz" }) },
 			];
 			expect(
-				findRequest([request.url, { headers: { "x-foo-bar": "baz" } }])(
+				findRequest([request.url, { headers: new Headers({ "x-foo-bar": "baz" }) }])(
 					mocked,
 				),
 			).toEqual(true);
@@ -61,11 +61,11 @@ describe("Utils", () => {
 
 		test("should not find a request by URL if the headers do not match", () => {
 			const request = new Request("http://localhost/api/users", {
-				headers: { "x-foo-bar": "baz" },
+				headers: new Headers({ "x-foo-bar": "baz" }),
 			});
 			const mocked: MockArr = [/\/api\/users$/, DEFAULT_MOCK_OPTIONS];
 			expect(
-				findRequest([request.url, { headers: { "x-foo-bar": "baz" } }])(
+				findRequest([request.url, { headers: new Headers({ "x-foo-bar": "baz" }) }])(
 					mocked,
 				),
 			).toEqual(false);
@@ -74,26 +74,24 @@ describe("Utils", () => {
 
 	describe("makeResponse", () => {
 		test("should return a Response object", () => {
-			const response = makeResponse(200, "/");
+			const response = makeResponse(200);
 			expect(response.ok).toEqual(true);
 			expect(response.status).toEqual(200);
-			expect(response.statusText).toEqual(200);
-			expect(response.url).toEqual("/");
 			expect(response.headers).toBeInstanceOf(Headers);
 			expect(response.redirected).toEqual(false);
 			expect(response.bodyUsed).toEqual(false);
 		});
 
 		test("should return a Response object with data", async () => {
-			const response = makeResponse(200, "/", {
+			const response = makeResponse(200, {
 				response: { data: { foo: "bar" } },
 			});
 			expect(await response.json()).toEqual({ foo: "bar" });
 		});
 
 		test("should return a Response object with headers", () => {
-			const response = makeResponse(200, "/", {
-				response: { headers: { "x-foo-bar": "baz" } },
+			const response = makeResponse(200, {
+				response: { headers: new Headers({ "x-foo-bar": "baz" }) },
 			});
 			expect(response.headers.get("x-foo-bar")).toEqual("baz");
 		});
