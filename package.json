@@ -1,7 +1,7 @@
 {
   "name": "bun-bagel",
   "description": "🥯 The Bun fetch mocker with a hole lot of flavor.",
-  "version": "1.0.9",
+  "version": "1.1.0",
   "module": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -16,13 +16,18 @@
     "dev": "bun run src/index.ts",
     "build": "bun run build:bun && bun run build:emitDeclarations",
     "build:bun": "bun build ./src/index.ts --outdir dist --target bun --minify --sourcemap=external",
-    "build:emitDeclarations": "tsc --emitDeclarationOnly --project tsconfig.json --tsBuildInfoFile './dist/.tsbuildinfo'",
+    "build:emitDeclarations": "tsc --emitDeclarationOnly --project tsconfig.build.json --tsBuildInfoFile './dist/.tsbuildinfo'",
     "sandbox": "bun run ./sandbox/index.ts",
     "test": "bun test --coverage",
+    "lint": "bunx biome lint --write ./src ./tests",
+    "format": "bunx biome format --write ./src ./tests",
+    "check": "bunx biome check --write ./src ./tests",
+    "check:fix": "bunx biome check --unsafe --fix ./src ./tests",
     "prepublish": "bun run build"
   },
   "devDependencies": {
-    "@types/bun": "latest",
+    "@biomejs/biome": "1.9.2",
+    "@types/bun": "^1.2.4",
     "bun-types": "latest"
   },
   "peerDependencies": {

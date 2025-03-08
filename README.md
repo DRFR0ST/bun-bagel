@@ -96,7 +96,7 @@ import type { MockOptions } from "bun-bagel";
 
 const options: MockOptions = {
     method: "POST",
-    headers: { "x-foo-bar": "baz" },
+    headers: new Headers({ "x-foo-bar": "baz" }),
     response: {
         data: { name: "Foo" },
     }
@@ -106,7 +106,7 @@ const options: MockOptions = {
 mock("https://example.com/api/users/*", options);
 
 // Make a fetch request to the mocked URL
-const response = await fetch("https://example.com/api/users/123", { headers: { "x-foo-bar": "baz" } });
+const response = await fetch("https://example.com/api/users/123", { headers: new Headers({ "x-foo-bar": "baz" }) });
 
 // Requests without the headers will not be matched.
 const response2 = await fetch("https://example.com/api/users/123");
@@ -124,7 +124,7 @@ const options: MockOptions = {
     response: {
         data: { name: "Foo" },
         status: 404,
-        headers: { "x-foo-bar": "baz" },
+        headers: new Headers({ "x-foo-bar": "baz" }),
     }
 };
 
@@ -139,6 +139,16 @@ console.log(response.status); // => 404
 console.log(response.headers); // => { "x-foo-bar": "baz" }
 ```
 
+### Disable real http requests
+
+```
+import { disableRealRequests } from "bun-bagel";
+
+disableRealRequests();
+
+await fetch("https://example.com/api/users/123"); // Throws 404 error.
+```
+
 ## 🤝 Contributing
 
 Contributions are welcome! Please see the [CONTRIBUTING.md](CONTRIBUTING.md) file for details.
@@ -150,7 +160,8 @@ To contribute to bun-bagel, follow these steps:
 1. Clone the repository: `git clone https://github.com/DRFR0ST/bun-bagel.git`
 2. Install dependencies: `bun install`
 3. Run tests: `bun test`
-4. Build the library: `bun run build`
+4. Run linter & formatter: `bun run check`
+5. Build the library: `bun run build`
 
 > [!NOTE]
 >You can also play around with bun-bagel by making changes in the `/sandbox` directory and running `bun run sandbox`. Make sure to build the library after making changes in the `/src` directory.
