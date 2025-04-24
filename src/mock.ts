@@ -1,6 +1,6 @@
-import { DEFAULT_MOCK_OPTIONS } from "./constants";
-import type { MockOptions } from "./types";
-import { findRequest, makeResponse, wildcardToRegex } from "./utils";
+import { DEFAULT_MOCK_OPTIONS } from "./constants.js";
+import type { MockOptions } from "./types.d.ts";
+import { findRequest, makeResponse, wildcardToRegex } from "./utils.js";
 
 let ORIGINAL_FETCH: (
 	request: Request | string,

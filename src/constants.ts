@@ -1,4 +1,4 @@
-import type { MockOptions } from "./types";
+import type { MockOptions } from "./types.d.ts";
 
 /**
  * The default value for mock options.
