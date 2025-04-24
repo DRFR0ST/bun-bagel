@@ -106,10 +106,10 @@ const options: MockOptions = {
 mock("https://example.com/api/users/*", options);
 
 // Make a fetch request to the mocked URL
-const response = await fetch("https://example.com/api/users/123", { headers: new Headers({ "x-foo-bar": "baz" }) });
+const response = await fetch("https://example.com/api/users/123", { headers: new Headers({ "x-foo-bar": "baz" }), method: "POST" });
 
 // Requests without the headers will not be matched.
-const response2 = await fetch("https://example.com/api/users/123");
+const response2 = await fetch("https://example.com/api/users/123", { method: "POST" });
 
 // Check the response body.
 console.log(await response.json()); // => { name: "Foo" }
