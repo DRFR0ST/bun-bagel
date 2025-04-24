@@ -192,7 +192,9 @@ describe("Mock", () => {
         };
         mock(request, options);
         const response = await fetch(`${API_URL}/users`, { headers: new Headers({ "x-foo-bar": "baz"  }) });
-        expect([...response.headers.entries()]).toEqual([[ "x-baz-qux", "quux" ]]);
+        expect([...response.headers.entries()]).toHaveLength(2);
+        expect(response.headers.get("content-type")).toContain("application/json");
+        expect(response.headers.get("x-baz-qux")).toEqual("quux");
     });
 
     test("mock: should mock a request with Blob", async () => {

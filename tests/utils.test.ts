@@ -89,6 +89,15 @@ describe("Utils", () => {
 			expect(await response.json()).toEqual({ foo: "bar" });
 		});
 
+		test("should return a Response object with Buffer", async () => {
+			const response = makeResponse(200, {
+				response: { data: Buffer.from("ABC", "utf-8") },
+			});
+
+			const buffer = Buffer.from(await response.arrayBuffer());
+			expect(buffer.toString("utf-8")).toEqual("ABC");
+		});
+
 		test("should return a Response object with headers", () => {
 			const response = makeResponse(200, {
 				response: { headers: new Headers({ "x-foo-bar": "baz" }) },

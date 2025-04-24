@@ -67,7 +67,42 @@ export const makeResponse = (status: number, options: MockOptions = DEFAULT_MOCK
 
     const _data = response?.data ?? data;
     const _headers = response?.headers ?? headers;
-    const body = _data instanceof Blob || _data instanceof FormData ? _data : new Blob([JSON.stringify(_data)]);
 
-    return new Response(body, { headers: _headers, status });
+    // ResponseInit supports the following types:
+    // Native values: ArrayBuffer, Blob, FormData, URLSearchParams, null, string
+    // Types: AsyncIterable<Uint8Array>, Iterable<Uint8Array>, NodeJS.ArrayBufferView
+    if (
+        _data instanceof ArrayBuffer ||
+        _data instanceof Blob ||
+        _data instanceof FormData ||
+        _data instanceof URLSearchParams ||
+        typeof _data === "string" ||
+        _data === null
+    ) {
+        return new Response(_data, { headers: _headers, status });
+    }
+
+    // NodeJS.ArrayBufferView
+    if (ArrayBuffer.isView(_data)) {
+        return new Response(_data as NodeJS.ArrayBufferView, {
+            headers: _headers,
+            status,
+        });
+    }
+
+    if (
+        typeof _data === "object" &&
+        _data !== null &&
+        (Symbol.asyncIterator in _data || Symbol.iterator in _data)
+    ) {
+        return new Response(
+            _data as AsyncIterable<Uint8Array> | Iterable<Uint8Array>,
+            {
+                headers: _headers,
+                status,
+            },
+        );
+    }
+
+    return Response.json(_data, { headers: _headers, status });
 }
