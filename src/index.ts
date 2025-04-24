@@ -1,3 +1,3 @@
-export * from "./mock";
-export * from "./types";
-export type * from "./types";
+export * from "./mock.js";
+export * from "./types.js";
+export type * from "./types.d.ts";
