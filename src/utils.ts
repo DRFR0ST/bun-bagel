@@ -1,5 +1,5 @@
 import { DEFAULT_MOCK_OPTIONS } from "./constants.js";
-import type { MockOptions } from "./types.js";
+import type { MockOptions } from "./types.d.ts";
 
 /**
  * @description Convert a wildcard string to a regular expression.
