@@ -1,0 +1,14 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "moduleResolution": "nodenext",
+    "module": "nodenext", // Ensure the module format is also nodenext
+    "noEmit": true, // Don't output files, just check for errors
+    "skipLibCheck": true // Keep this false to catch potential issues with your type declarations
+  },
+  "include": [
+    "src/**/*.ts",
+    "resolutionTests/nodenext.test.ts" // Point to the specific file we'll create below
+  ],
+  "exclude": ["node_modules", "dist", "sandbox"]
+}
