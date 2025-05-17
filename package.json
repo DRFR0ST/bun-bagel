@@ -2,7 +2,6 @@
   "name": "bun-bagel",
   "description": "🥯 The Bun fetch mocker with a hole lot of flavor.",
   "version": "1.2.0",
-  "module": "src/index.ts",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
@@ -10,7 +9,7 @@
   "author": "Mike Eling <mike.eling97@gmail.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/DRFR0ST/bun-bagel.git"
+    "url": "git+https://github.com/DRFR0ST/bun-bagel.git"
   },
   "scripts": {
     "dev": "bun run src/index.ts",
@@ -18,7 +17,9 @@
     "build:bun": "bun build ./src/index.ts --outdir dist --target bun --minify --sourcemap=external",
     "build:emitDeclarations": "tsc --emitDeclarationOnly --project tsconfig.build.json --tsBuildInfoFile './dist/.tsbuildinfo'",
     "sandbox": "bun run ./sandbox/index.ts",
-    "test": "bun test --coverage",
+    "test": "bun run test:compile-configs && bun test --coverage",
+    "test:compile-nodenext": "tsc --noEmit --project tsconfig.test.nodenext.json",
+    "test:compile-configs": "bun run test:compile-nodenext",
     "lint": "bunx biome lint --write ./src ./tests",
     "format": "bunx biome format --write ./src ./tests",
     "check": "bunx biome check --write ./src ./tests",
